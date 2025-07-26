@@ -1,4 +1,4 @@
-module goThreadPriority
+module taskPriority
 
 go 1.24.3
 
