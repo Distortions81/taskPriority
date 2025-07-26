@@ -4,12 +4,13 @@ import "fmt"
 
 var TaskLimit int = 8
 
-var TaskQueue []*taskData
+const LOWEST_PRIORITY = 100
+
+var TaskQueue [LOWEST_PRIORITY][]*taskData
 
 type taskData struct {
 	Value    int
 	Priority int
-	Do       func()
 }
 
 func (t *taskData) IncrementValue() {
@@ -17,16 +18,23 @@ func (t *taskData) IncrementValue() {
 }
 
 func main() {
-	newTask := &taskData{
-		Priority: 0,
-	}
-	TaskQueue = append(TaskQueue, newTask)
+	newTask := MakeTask(0)
 
 	for range 10 {
 		newTask.IncrementValue()
 	}
 
-	for t, task := range TaskQueue {
-		fmt.Printf("Task %v: %v\n", t, task.Value)
+	for taskPriority := range LOWEST_PRIORITY {
+		for t, task := range TaskQueue[taskPriority] {
+			fmt.Printf("Priority: %v, Task %v: Value: %v\n", taskPriority, t, task.Value)
+		}
 	}
+}
+
+func MakeTask(priority int) *taskData {
+	newTask := &taskData{
+		Priority: priority,
+	}
+	TaskQueue[priority] = append(TaskQueue[priority], newTask)
+	return newTask
 }
