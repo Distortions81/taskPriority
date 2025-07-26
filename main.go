@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 var TaskLimit int = 8
 
@@ -18,15 +21,27 @@ func (t *taskData) IncrementValue() {
 }
 
 func main() {
-	newTask := MakeTask(0)
+	MakeTask(0)
+	MakeTask(0)
+	MakeTask(0)
 
-	for range 10 {
-		newTask.IncrementValue()
+	MakeTask(1)
+
+	start := time.Now()
+	for {
+		for taskPriority := range LOWEST_PRIORITY {
+			for _, task := range TaskQueue[taskPriority] {
+				task.IncrementValue()
+			}
+		}
+		if time.Since(start) > time.Second {
+			break
+		}
 	}
 
 	for taskPriority := range LOWEST_PRIORITY {
 		for t, task := range TaskQueue[taskPriority] {
-			fmt.Printf("Priority: %v, Task %v: Value: %v\n", taskPriority, t, task.Value)
+			fmt.Printf("Priority: %v, Task %v: Value: %v\n", taskPriority, t+1, task.Value)
 		}
 	}
 }
